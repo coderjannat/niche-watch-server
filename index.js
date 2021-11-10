@@ -45,7 +45,7 @@ async function run() {
       const database = client.db('watch');
       // const appointmentsCollection = database.collection('appointments');
       const watchCollection = database.collection('watchCollection');
-      const oederCollection = database.collection('order');
+      const orderCollection = database.collection('order');
       const usersCollection = database.collection('users');
 
       // showing all watch collection 
@@ -70,26 +70,22 @@ async function run() {
   // plceorder 
   app.post("/order", async (req, res) => {
   
-    const result = await oederCollection.insertOne(req.body);
+    const result = await orderCollection.insertOne(req.body);
     res.send(result);
   });
-
-      app.get('/appointments', verifyToken, async (req, res) => {
+// get the user order
+      app.get('/order', verifyToken, async (req, res) => {
           const email = req.query.email;
-          const date = req.query.date;
+        
+          const query = { email: email }
 
-          const query = { email: email, date: date }
-
-          const cursor = appointmentsCollection.find(query);
-          const appointments = await cursor.toArray();
-          res.json(appointments);
+          const cursor = orderCollection.find(query);
+          const order = await cursor.toArray();
+          res.json(order);
+          console.log(order)
       })
 
-      app.post('/appointments', async (req, res) => {
-          const appointment = req.body;
-          const result = await appointmentsCollection.insertOne(appointment);
-          res.json(result)
-      });
+     
 
       app.get('/users/:email', async (req, res) => {
           const email = req.params.email;
